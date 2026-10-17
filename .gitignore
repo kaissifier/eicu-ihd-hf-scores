@@ -1,0 +1,9 @@
+# eICU-CRD data and anything derived from it must not be shared (PhysioNet data use agreement)
+data/
+output/
+*.csv
+*.csv.gz
+*.parquet
+
+__pycache__/
+.Rhistory
