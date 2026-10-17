@@ -107,13 +107,21 @@ missing = {
 }
 missing["pct"]["pf_ratio_ventilated"] = 100 * float(a.loc[vent, "pf_min"].isna().mean())
 
+# SAPS 3 needs laboratory values from 1 hour before to 1 hour after ICU admission
+lab = pd.read_parquet(EXTRACT_DIR / "lab.parquet")
+first_hour = lab[lab.patientunitstayid.isin(a.patientunitstayid) & lab.labresultoffset.between(-60, 60)]
+SAPS3_LABS = {"bilirubin": "total bilirubin", "creatinine": "creatinine", "wbc": "WBC x 1000", "platelets": "platelets x 1000",
+              "ph": "pH", "pao2": "paO2"}
+first_hour_labs = {k: 100 * first_hour.loc[first_hour.labname == v, "patientunitstayid"].nunique() / len(a)
+                   for k, v in SAPS3_LABS.items()}
+
 predicted = {name: [100 * float(a[c].mean()), 100 * float(a[c].std())]
              for name, c in (("APACHE IVa", "p_apache"), ("SAPS II", "sapsii_prob"), ("OASIS", "oasis_prob"))}
 spearman = a[["p_apache", "sapsii", "oasis"]].corr(method="spearman")["p_apache"].drop("p_apache").to_dict()
 
 with open(out("descriptives.json"), "w") as f:
     json.dump({"table1": table1, "missing": missing, "predicted_mean_sd": predicted,
-               "spearman_with_apache": spearman}, f, indent=1)
+               "spearman_with_apache": spearman, "first_hour_labs_pct": first_hour_labs}, f, indent=1)
 
 print(f"Table 1: {table1['n']} patients | hospital death {table1['hospital_death'][1]:.1f}%, "
       f"ICU death {table1['icu_death'][1]:.1f}%")
