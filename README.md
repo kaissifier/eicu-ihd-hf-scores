@@ -3,7 +3,7 @@
 Code for the study comparing APACHE IVa, SAPS II and OASIS in patients with ischemic heart disease admitted to the
 ICU with acute or decompensated heart failure, using the eICU Collaborative Research Database (eICU-CRD).
 
-Authors: Tiago da Conceição Aquino, Lucas Alencar Queiroz, Lorena E. P. Salomão.
+Authors: Tiago da Conceição Aquino, Lucas Alencar Queiroz, Lorena Elaine Pina Salomão.
 
 ## Data
 
